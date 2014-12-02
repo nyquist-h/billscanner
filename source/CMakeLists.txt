@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+set(CMAKE_CXX_FLAGS "-fexceptions -Wall -Wextra -Wno-long-long -Wno-variadic-macros -std=c++11")
+set(name gnucache-bill-importer)
+set(cmake_export_compile_commands 1)
+add_executable(gnucache-bill-importer gnucache-bill-importer.cpp) 
