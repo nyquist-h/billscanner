@@ -8,3 +8,5 @@ set(cmake_export_compile_commands 1)
 add_executable(gnucache-bill-importer 
                gnucache-bill-importer.cpp
                imageLoader.cpp)
+
+target_link_libraries(gnucache-bill-importer ${OpenCV_LIBS} )
