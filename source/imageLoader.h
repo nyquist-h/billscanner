@@ -13,7 +13,7 @@ class ImageLoader
 {
   public:
     ImageLoader();
-    virtual cv::Mat loadImage(std::string) = 0;
+    virtual cv::Mat loadImage(const std::string&) = 0;
     virtual ~ImageLoader();
 };
 
@@ -21,7 +21,7 @@ class ImageReader : public ImageLoader
 {
   public:
     ImageReader();
-    cv::Mat loadImage(std::string);
+    cv::Mat loadImage(const std::string&);
     virtual ~ImageReader();
 };
 
@@ -29,7 +29,7 @@ class ImageScanner : public ImageLoader
 {
   public:
     ImageScanner();
-    cv::Mat loadImage(std::string);
+    cv::Mat loadImage(const std::string&);
     virtual ~ImageScanner();
 };
 
@@ -37,7 +37,7 @@ class ImageTaker : public ImageLoader
 {
   public:
     ImageTaker();
-    cv::Mat loadImage(std::string);
+    cv::Mat loadImage(const std::string&);
     virtual ~ImageTaker();
 };
 
@@ -56,7 +56,7 @@ class ImageLoaderFactory
   public:
     ImageLoaderFactory(DeviceTyp);
     std::shared_ptr<ImageLoader> getImageLoader() const;
-    virtual ~ImageLoaderFactory();
+    virtual ~ImageLoaderFactory(){}
 };
 
 

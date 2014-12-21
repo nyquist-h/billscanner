@@ -9,20 +9,30 @@ using cv::imread;
 using cv::Mat;
 using cv::VideoCapture;
 
-Mat ImageReader::loadImage(string location) 
+//TODO install doxygentoolkit plugin, comment
+ImageLoader::ImageLoader(){};
+ImageLoader::~ImageLoader(){};
+
+ImageReader::ImageReader(){};
+ImageReader::~ImageReader(){};
+Mat ImageReader::loadImage(const string& location) 
 {
   Mat image = imread(location, CV_LOAD_IMAGE_COLOR);
   return image;
 }
 
-Mat ImageScanner::loadImage(string device) 
+ImageScanner::ImageScanner(){};
+ImageScanner::~ImageScanner(){};
+Mat ImageScanner::loadImage(const string& /*device*/) 
 {
   //TODO
   Mat image;
   return image;
 }
 
-Mat ImageTaker::loadImage(string device) 
+ImageTaker::ImageTaker(){};
+ImageTaker::~ImageTaker(){};
+Mat ImageTaker::loadImage(const string& device) 
 {
   VideoCapture camera(stoi(device));
   //if(!cameta.isOpened()) 
@@ -38,17 +48,16 @@ ImageLoaderFactory::ImageLoaderFactory(DeviceTyp deviceTyp)
   switch(deviceTyp)
   {
     case DeviceTyp::Disk:
-      m_imageLoader = make_shared<ImageReader>(new ImageReader());
+      m_imageLoader = shared_ptr<ImageReader>(new ImageReader());
       break;
     case DeviceTyp::Scanner:
-      m_imageLoader = make_shared<ImageScanner>(new ImageScanner());
+      m_imageLoader = shared_ptr<ImageScanner>(new ImageScanner());
       break;
     case DeviceTyp::Webcam:
-      m_imageLoader = make_shared<ImageTaker>(new ImageTaker());
+      m_imageLoader = shared_ptr<ImageTaker>(new ImageTaker());
       break;
     default:
-      break;
-      //TODO throw exception
+      throw ImageLoaderException(__FILE__, __LINE__, "Unknown device!");
   }
 }
 
@@ -59,8 +68,17 @@ shared_ptr<ImageLoader> ImageLoaderFactory::getImageLoader() const
 
 EXPORT CvMat getImage(DeviceTyp deviceTyp, std::string device)
 {
-  ImageLoaderFactory imageLoaderFactory(deviceTyp);
-  std::shared_ptr<ImageLoader> imageLoader = imageLoaderFactory.getImageLoader();
+  std::shared_ptr<ImageLoader> imageLoader;
+  try 
+  {
+    ImageLoaderFactory imageLoaderFactory(deviceTyp);
+    imageLoader = imageLoaderFactory.getImageLoader();
+  }catch(std::exception& exception)
+  {
+    //TODO logging show: exception.what();
+    CvMat nullMat;
+    return nullMat;
+  }
 
   return imageLoader->loadImage(device);
 }
