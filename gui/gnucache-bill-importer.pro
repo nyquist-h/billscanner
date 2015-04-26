@@ -12,8 +12,7 @@ TARGET = gnucache-bill-importer
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        main.cpp
+SOURCES += main.cpp
 
 HEADERS  += main.h
 

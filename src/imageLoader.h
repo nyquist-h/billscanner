@@ -43,10 +43,12 @@ class ImageTaker : public ImageLoader
 
 enum class DeviceTyp
 {
-  Disk, 
+  Disk,
   Scanner,
   Webcam
 };
+
+std::string to_string(DeviceTyp deviceTyp);
 
 class ImageLoaderFactory
 {

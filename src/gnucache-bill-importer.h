@@ -16,16 +16,43 @@
 
 #include <exception>
 #include <string>
+#include <map>
+
+#define PRINT(variable) #variable 
+
+enum class Error
+{
+ UnableToLoadImageFromFile = 0,
+ UnableToLoadImageFromWebcam,
+ UnableToLoadImageFromsScanner,
+ UnknownDeviceType,
+
+ Count
+};
+
+class ErrorMessages
+{
+  private:
+    std::map<Error, std::string> m_errors; 
+
+    ErrorMessages();
+    ErrorMessages(const ErrorMessages&); //TODO check if needed in c++ 11
+
+  public:
+    static ErrorMessages& getInstance();
+    std::string getErrorMessage(Error);
+};
 
 class ImageLoaderException : public std::exception 
 {
  private:
-   std::string m_fileName;
+   std::string m_functionName;
    unsigned int m_lineNumber;
    std::string m_message;
 
  public:
-   ImageLoaderException(std::string, unsigned int, std::string);
+   ImageLoaderException(const std::string&, unsigned int, Error);
+   ImageLoaderException(const std::string&, unsigned int, Error, const std::string&);
    const char* what() const noexcept;
 };
 

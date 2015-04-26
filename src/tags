@@ -1,0 +1,62 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+DeviceTyp	imageLoader.h	/^enum class DeviceTyp$/;"	c
+DirectoryOfThisScript	.ycm_extra_conf.py	/^def DirectoryOfThisScript():$/;"	f
+Disk	imageLoader.h	/^  Disk,$/;"	m	class:DeviceTyp
+EXPORT	gnucache-bill-importer.h	11;"	d
+EXPORT	gnucache-bill-importer.h	5;"	d
+EXPORT	gnucache-bill-importer.h	8;"	d
+Error	gnucache-bill-importer.h	/^enum class Error$/;"	c
+ErrorMessages	gnucache-bill-importer.cpp	/^ErrorMessages::ErrorMessages()$/;"	f	class:ErrorMessages
+ErrorMessages	gnucache-bill-importer.h	/^class ErrorMessages$/;"	c
+FlagsForFile	.ycm_extra_conf.py	/^def FlagsForFile( filename, **kwargs ):$/;"	f
+GNUCACHE_BILL_IMPORTER_H_EUZYAZPN	gnucache-bill-importer.h	2;"	d
+GetCompilationInfoForFile	.ycm_extra_conf.py	/^def GetCompilationInfoForFile( filename ):$/;"	f
+IMAGELOADER_H	imageLoader.h	2;"	d
+IMPORT	gnucache-bill-importer.h	12;"	d
+IMPORT	gnucache-bill-importer.h	6;"	d
+IMPORT	gnucache-bill-importer.h	9;"	d
+ImageLoader	imageLoader.cpp	/^ImageLoader::ImageLoader(){};$/;"	f	class:ImageLoader
+ImageLoader	imageLoader.h	/^class ImageLoader$/;"	c
+ImageLoaderException	gnucache-bill-importer.cpp	/^ImageLoaderException::ImageLoaderException(const string& functionName, unsigned int lineNumber,$/;"	f	class:ImageLoaderException
+ImageLoaderException	gnucache-bill-importer.h	/^class ImageLoaderException : public std::exception $/;"	c
+ImageLoaderFactory	imageLoader.cpp	/^ImageLoaderFactory::ImageLoaderFactory(DeviceTyp deviceTyp)$/;"	f	class:ImageLoaderFactory
+ImageLoaderFactory	imageLoader.h	/^class ImageLoaderFactory$/;"	c
+ImageReader	imageLoader.cpp	/^ImageReader::ImageReader(){};$/;"	f	class:ImageReader
+ImageReader	imageLoader.h	/^class ImageReader : public ImageLoader$/;"	c
+ImageScanner	imageLoader.cpp	/^ImageScanner::ImageScanner(){};$/;"	f	class:ImageScanner
+ImageScanner	imageLoader.h	/^class ImageScanner : public ImageLoader$/;"	c
+ImageTaker	imageLoader.cpp	/^ImageTaker::ImageTaker(){};$/;"	f	class:ImageTaker
+ImageTaker	imageLoader.h	/^class ImageTaker : public ImageLoader$/;"	c
+IsHeaderFile	.ycm_extra_conf.py	/^def IsHeaderFile( filename ):$/;"	f
+MakeRelativePathsInFlagsAbsolute	.ycm_extra_conf.py	/^def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):$/;"	f
+SOURCE_EXTENSIONS	.ycm_extra_conf.py	/^SOURCE_EXTENSIONS = [ '.cpp', '.cxx', '.cc', '.c', '.m', '.mm' ]$/;"	v
+Scanner	imageLoader.h	/^  Scanner,$/;"	m	class:DeviceTyp
+UnableToLoadImageFromFile	gnucache-bill-importer.h	/^ UnableToLoadImageFromFile = 0,$/;"	m	class:Error
+compilation_database_folder	.ycm_extra_conf.py	/^compilation_database_folder = ''$/;"	v
+database	.ycm_extra_conf.py	/^  database = None$/;"	v
+database	.ycm_extra_conf.py	/^  database = ycm_core.CompilationDatabase( compilation_database_folder )$/;"	v
+flags	.ycm_extra_conf.py	/^flags = [$/;"	v
+getImage	imageLoader.cpp	/^EXPORT CvMat getImage(DeviceTyp deviceTyp, std::string device)$/;"	f
+getImageLoader	imageLoader.cpp	/^shared_ptr<ImageLoader> ImageLoaderFactory::getImageLoader() const$/;"	f	class:ImageLoaderFactory
+loadImage	imageLoader.cpp	/^Mat ImageReader::loadImage(const string& location)$/;"	f	class:ImageReader
+loadImage	imageLoader.cpp	/^Mat ImageScanner::loadImage(const string& \/*device*\/)$/;"	f	class:ImageScanner
+loadImage	imageLoader.cpp	/^Mat ImageTaker::loadImage(const string& device)$/;"	f	class:ImageTaker
+m_errors	gnucache-bill-importer.h	/^    std::map<Error, std::string> m_errors; $/;"	m	class:ErrorMessages
+m_functionName	gnucache-bill-importer.h	/^   std::string m_functionName;$/;"	m	class:ImageLoaderException
+m_imageLoader	imageLoader.h	/^    std::shared_ptr<ImageLoader> m_imageLoader;$/;"	m	class:ImageLoaderFactory
+m_lineNumber	gnucache-bill-importer.h	/^   unsigned int m_lineNumber;$/;"	m	class:ImageLoaderException
+m_message	gnucache-bill-importer.h	/^   std::string m_message;$/;"	m	class:ImageLoaderException
+main	gnucache-bill-importer.cpp	/^int main()$/;"	f
+noexcept	gnucache-bill-importer.h	/^   const char* what() const noexcept;$/;"	m	class:ImageLoaderException
+os	.ycm_extra_conf.py	/^import os$/;"	i
+ycm_core	.ycm_extra_conf.py	/^import ycm_core$/;"	i
+~ImageLoader	imageLoader.cpp	/^ImageLoader::~ImageLoader(){};$/;"	f	class:ImageLoader
+~ImageLoaderFactory	imageLoader.h	/^    virtual ~ImageLoaderFactory(){}$/;"	f	class:ImageLoaderFactory
+~ImageReader	imageLoader.cpp	/^ImageReader::~ImageReader(){};$/;"	f	class:ImageReader
+~ImageScanner	imageLoader.cpp	/^ImageScanner::~ImageScanner(){};$/;"	f	class:ImageScanner
+~ImageTaker	imageLoader.cpp	/^ImageTaker::~ImageTaker(){};$/;"	f	class:ImageTaker
