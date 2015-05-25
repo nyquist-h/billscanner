@@ -11,9 +11,8 @@
 class ImageLoader
 {
   public:
-    ImageLoader();
     virtual cv::Mat loadImage(const std::string&) = 0;
-    virtual ~ImageLoader();
+    virtual ~ImageLoader(){}
 };
 
 class ImageReader : public ImageLoader
@@ -40,8 +39,6 @@ enum class DeviceTyp
   Scanner,
   Webcam
 };
-
-std::string to_string(DeviceTyp deviceTyp);
 
 class ImageLoaderFactory
 {
