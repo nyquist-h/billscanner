@@ -14,13 +14,6 @@ std::string to_string(DeviceTyp deviceTyp)
   return PRINT(deviceTyp);
 }
 
-//TODO comment
-ImageLoader::ImageLoader(){};
-ImageLoader::~ImageLoader(){};
-
-ImageReader::ImageReader(){};
-ImageReader::~ImageReader(){};
-
 /**
  * @brief Loads an image from a file
  * @param location The location of the file on the disc
@@ -34,9 +27,6 @@ Mat ImageReader::loadImage(const string& location)
   return image;
 }
 
-ImageScanner::ImageScanner(){};
-ImageScanner::~ImageScanner(){};
-
 /**
  * @brief Scans an image with an scanner
  * @param
@@ -45,12 +35,9 @@ ImageScanner::~ImageScanner(){};
 Mat ImageScanner::loadImage(const string& /*device*/)
 {
   //TODO error handling
-  Mat image;
-  return image;
+  assert("Not implemented!");
+  return Mat();
 }
-
-ImageTaker::ImageTaker(){};
-ImageTaker::~ImageTaker(){};
 
 /**
  * @brief Captures an image from a camera

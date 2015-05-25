@@ -8,7 +8,6 @@
 #include <string>
 #include <memory>
 
-//TODO install doxygentoolkit plugin
 class ImageLoader
 {
   public:
@@ -20,25 +19,19 @@ class ImageLoader
 class ImageReader : public ImageLoader
 {
   public:
-    ImageReader();
     cv::Mat loadImage(const std::string&);
-    virtual ~ImageReader();
 };
 
 class ImageScanner : public ImageLoader
 {
   public:
-    ImageScanner();
     cv::Mat loadImage(const std::string&);
-    virtual ~ImageScanner();
 };
 
 class ImageTaker : public ImageLoader
 {
   public:
-    ImageTaker();
     cv::Mat loadImage(const std::string&);
-    virtual ~ImageTaker();
 };
 
 enum class DeviceTyp
