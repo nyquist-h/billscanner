@@ -53,11 +53,3 @@ const char* ImageLoaderException::what() const noexcept
  return m_message.c_str(); 
 }
 
-int main()
-{
-  ErrorMessages::getInstance();
-  string str;
-  cout << __FILE__<< endl;
-  return 0;
-}
-

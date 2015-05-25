@@ -9,11 +9,6 @@ using cv::imread;
 using cv::Mat;
 using cv::VideoCapture;
 
-std::string to_string(DeviceTyp deviceTyp)
-{
-  return PRINT(deviceTyp);
-}
-
 /**
  * @brief Loads an image from a file
  * @param location The location of the file on the disc
@@ -73,7 +68,7 @@ ImageLoaderFactory::ImageLoaderFactory(DeviceTyp deviceTyp)
       m_imageLoader = shared_ptr<ImageTaker>(new ImageTaker());
       break;
     default:
-      throw ImageLoaderException(__FILE__, __LINE__, Error::UnknownDeviceType, to_string(deviceTyp));
+      throw ImageLoaderException(__FILE__, __LINE__, Error::UnknownDeviceType, PRINT(deviceTyp));
   }
 }
 
