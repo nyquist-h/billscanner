@@ -8,12 +8,19 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+CONFIG += c++11
+
 TARGET = gnucache-bill-importer
 TEMPLATE = app
 
 
-SOURCES += main.cpp
+SOURCES += main.cpp\
+           mainWindow.cpp
 
-HEADERS  += main.h
+HEADERS  += mainWindow.h
 
-FORMS    += main.ui
+FORMS    += mainWindow.ui
+
+INCLUDEPATH += /home/nyquist/projects/gnucach-bill-importer/src/
+LIBS        += -L/home/nyquist/projects/gnucash-bill-importer/build/debug -lgnucache-bill-importer
+#TODO change indluce and lib path
