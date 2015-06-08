@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS "-fexceptions -Wall -Wextra -Wno-long-long -Wno-variadic-mac
 set(name gnucache-bill-importer)
 set(cmake_export_compile_commands 1)
 
-add_executable(gnucache-bill-importer 
+add_library(gnucache-bill-importer SHARED
                  gnucache-bill-importer.cpp
                  imageLoader.cpp)
 
