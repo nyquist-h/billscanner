@@ -1,18 +1,5 @@
-#include "main.h"
+#include "mainWindow.h"
 #include "ui_main.h"
-
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::Main)
-{
-    ui->setupUi(this);
-    this->setWindowTitle("GNU-Cache Bill Importer");
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
 
 int main(int argc, char *argv[])
 {
