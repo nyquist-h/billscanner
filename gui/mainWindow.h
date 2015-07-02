@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 namespace Ui {
-class Main;
+class mainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -17,9 +17,10 @@ public:
 
 private slots:
     void on_load_btn_clicked();
-
 private:
-    Ui::Main *ui;
+    Ui::mainWindow *ui;
+    QImage _qimage;
+
 };
 
 #endif // MAIN_H

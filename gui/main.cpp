@@ -1,5 +1,9 @@
 #include "mainWindow.h"
-#include "ui_main.h"
+#include "ui_mainWindow.h"
+#include <QApplication>
+#include <QWidget>
+#include <QImage>
+#include <QPainter>
 
 int main(int argc, char *argv[])
 {

@@ -19,8 +19,11 @@ SOURCES += main.cpp\
 
 HEADERS  += mainWindow.h
 
-FORMS    += mainWindow.ui
+
+FORMS    += \
+    mainWindow.ui
 
 INCLUDEPATH += /home/nyquist/projects/gnucach-bill-importer/src/
+LIBS        += `pkg-config --libs opencv`
 LIBS        += -L/home/nyquist/projects/gnucash-bill-importer/build/debug -lgnucache-bill-importer
 #TODO change indluce and lib path
