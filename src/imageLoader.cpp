@@ -106,7 +106,7 @@ EXPORT CvMat getImage(DeviceTyp deviceTyp, const char* device)
     if(!success)
       throw ImageLoaderException(__FILE__, __LINE__, Error::ImageAlreadyLoaded, "Location: "s + device);
 
-    return picture->get()->operator CvMat();
+    return *picture->get();
   }
   catch(const exception& exception)
   {
