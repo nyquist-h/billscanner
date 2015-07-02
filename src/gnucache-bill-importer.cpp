@@ -1,9 +1,7 @@
 #include "gnucache-bill-importer.h"
 
 #include <iostream>
-//#include <fstream>
 #include <string>
-//#include <functional>
 #include <assert.h>
 
 using namespace std;

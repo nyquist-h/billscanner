@@ -52,11 +52,12 @@ class ImageLoaderFactory
 };
 
 
-extern "C" {
+extern "C" 
+{
 
-EXPORT CvMat getImage(DeviceTyp, const char*);
-EXPORT void deleteImage(CvMat);
-//EXPORT short errorHappend(); //020715-TODOnyquistDev return error code
+  EXPORT CvMat getImage(DeviceTyp, const char*);
+  EXPORT void deleteImage(CvMat);
+  //EXPORT short errorHappend(); //020715-TODOnyquistDev return error code
 
 }// extern "C"
 

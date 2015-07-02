@@ -30,7 +30,7 @@ unique_ptr<Mat> ImageReader::loadImage(const string& location)
 /**
  * @brief Scans an image with an scanner
  * @param
- * @return The scanned Image 
+ * @return The scanned Image
  */
 unique_ptr<Mat> ImageScanner::loadImage(const string& /*device*/)
 {
@@ -46,7 +46,7 @@ unique_ptr<Mat> ImageScanner::loadImage(const string& /*device*/)
  */
 unique_ptr<Mat> ImageTaker::loadImage(const string& device)
 {
-  VideoCapture camera(stoi(device)); //020715-TODOnyquistDev can throw, 
+  VideoCapture camera(stoi(device)); //020715-TODOnyquistDev can throw,
   if(!camera.isOpened())
     throw ImageLoaderException(__func__, __LINE__, Error::UnableToLoadImageFromWebcam, device);
 
