@@ -19,9 +19,9 @@ TEST(ImageLoader_Test,ImageReaderGetValidImage)
   ImageLoaderFactory imageLoaderCreator(DeviceTyp::Disk);
   shared_ptr<ImageLoader> m_imageLoader { imageLoaderCreator.getImageLoader() };
   string location {"../../test/data/imageLoaderTestImage.jpg"};
-  Mat loadedImage{ m_imageLoader->loadImage(location) };
+  unique_ptr<Mat> loadedImage = m_imageLoader->loadImage(location);
   Mat originalImage{ imread(location, CV_LOAD_IMAGE_COLOR) };
-  Mat result{ loadedImage == originalImage };
+  Mat result(*loadedImage == originalImage);
   EXPECT_EQ(255, result.at<unsigned char>(0,0));
 }
 

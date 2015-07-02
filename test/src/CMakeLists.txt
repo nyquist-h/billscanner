@@ -4,7 +4,7 @@ project(gnucache-bill-importer_test)
 enable_testing()
 find_package(GTest REQUIRED)
 find_package(OpenCV REQUIRED)
-set(CMAKE_CXX_FLAGS "-fexceptions -Wall -Wextra -Wno-long-long -Wno-variadic-macros -std=c++11")
+set(CMAKE_CXX_FLAGS "-fexceptions -Wall -Wextra -Wno-long-long -Wno-variadic-macros -std=c++14")
 include_directories(${GTEST_INCLUDE_DIRS})
 include_directories("../../src/")
 add_executable(gnucache-bill-importer_test 
