@@ -12,6 +12,7 @@ ErrorMessages::ErrorMessages()
   m_errors[Error::UnableToLoadImageFromWebcam] = "Unable to load image form web cam!";
   m_errors[Error::UnableToLoadImageFromsScanner] = "Unable to load image form scanner!";
   m_errors[Error::UnknownDeviceType] = "Unknown device type!";
+  m_errors[Error::ImageAlreadyLoaded] = "Image already loaded";
 
   assert(m_errors.size() == static_cast<size_t>(Error::Count));
 }
