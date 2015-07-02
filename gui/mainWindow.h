@@ -19,7 +19,7 @@ private slots:
     void on_load_btn_clicked();
 private:
     Ui::mainWindow *ui;
-    QImage _qimage;
+    QImage m_displayedImage;
 
 };
 
