@@ -26,6 +26,7 @@ enum class Error
  UnableToLoadImageFromWebcam,
  UnableToLoadImageFromsScanner,
  UnknownDeviceType,
+ ImageAlreadyLoaded,
 
  Count
 };

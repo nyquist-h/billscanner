@@ -3,21 +3,26 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <string>
+#include <set>
+#include <memory>
 
 using namespace std;
 using cv::imread;
 using cv::Mat;
 using cv::VideoCapture;
 
+//020715-TODOnyquistDev export to loadedimage class and use custom compare function
+set<unique_ptr<Mat>> loadedImages;
+
 /**
  * @brief Loads an image from a file
  * @param location The location of the file on the disc
  * @return The loaded image
  */
-Mat ImageReader::loadImage(const string& location)
+unique_ptr<Mat> ImageReader::loadImage(const string& location)
 {
-  Mat image = imread(location, CV_LOAD_IMAGE_COLOR);
-  if(image.data == nullptr) //TODOmmer NULL
+  unique_ptr<Mat> image = make_unique<Mat>(imread(location, CV_LOAD_IMAGE_COLOR));
+  if(image->data == nullptr) //020715-TODOnyquistDev NULL
     throw ImageLoaderException(__func__, __LINE__, Error::UnableToLoadImageFromFile, location);
   return image;
 }
@@ -27,11 +32,11 @@ Mat ImageReader::loadImage(const string& location)
  * @param
  * @return The scanned Image 
  */
-Mat ImageScanner::loadImage(const string& /*device*/)
+unique_ptr<Mat> ImageScanner::loadImage(const string& /*device*/)
 {
   //TODO error handling
   assert("Not implemented!");
-  return Mat();
+  return nullptr;
 }
 
 /**
@@ -39,14 +44,14 @@ Mat ImageScanner::loadImage(const string& /*device*/)
  * @param device The Camera ID
  * @return The captured image
  */
-Mat ImageTaker::loadImage(const string& device)
+unique_ptr<Mat> ImageTaker::loadImage(const string& device)
 {
-  VideoCapture camera(stoi(device)); //stoi TODO?
+  VideoCapture camera(stoi(device)); //020715-TODOnyquistDev can throw, 
   if(!camera.isOpened())
     throw ImageLoaderException(__func__, __LINE__, Error::UnableToLoadImageFromWebcam, device);
 
-  Mat image;
-  camera >> image;
+  unique_ptr<Mat> image = make_unique<Mat>();
+  camera >> *image;
   return image;
 }
 
@@ -85,23 +90,28 @@ shared_ptr<ImageLoader> ImageLoaderFactory::getImageLoader() const
  * @brief Returns the loaded image to the function caller
  * @param deviceTyp The device type from which to load the image
  * @param device The device from which to load the image
- * @return The loaded image
+ * @return A pointer to the loaded image or to an empty image if an error occurred
  */
-EXPORT CvMat getImage(DeviceTyp deviceTyp, std::string device)
+EXPORT CvMat getImage(DeviceTyp deviceTyp, const char* device)
 {
-  std::shared_ptr<ImageLoader> imageLoader;
   try
   {
+    std::shared_ptr<ImageLoader> imageLoader;
     ImageLoaderFactory imageLoaderFactory(deviceTyp);
     imageLoader = imageLoaderFactory.getImageLoader();
+
+    auto picture = loadedImages.begin();
+    bool success {false};
+    tie(picture, success) = loadedImages.insert(imageLoader->loadImage(device));
+    if(!success)
+      throw ImageLoaderException(__FILE__, __LINE__, Error::ImageAlreadyLoaded, "Location: "s + device);
+
+    return picture->get()->operator CvMat();
   }
   catch(const exception& exception)
   {
-    //TODO logging show: exception.what();
-    CvMat nullMat;
-    return nullMat;
+    //020715-TODOnyquistDev logging show: exception.what();
+    return CvMat();
   }
-
-  return imageLoader->loadImage(device);
 }
 

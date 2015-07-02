@@ -11,26 +11,26 @@
 class ImageLoader
 {
   public:
-    virtual cv::Mat loadImage(const std::string&) = 0;
+    virtual std::unique_ptr<cv::Mat> loadImage(const std::string&) = 0;
     virtual ~ImageLoader(){}
 };
 
 class ImageReader : public ImageLoader
 {
   public:
-    cv::Mat loadImage(const std::string&);
+    std::unique_ptr<cv::Mat> loadImage(const std::string&);
 };
 
 class ImageScanner : public ImageLoader
 {
   public:
-    cv::Mat loadImage(const std::string&);
+    std::unique_ptr<cv::Mat> loadImage(const std::string&);
 };
 
 class ImageTaker : public ImageLoader
 {
   public:
-    cv::Mat loadImage(const std::string&);
+    std::unique_ptr<cv::Mat> loadImage(const std::string&);
 };
 
 enum class DeviceTyp
@@ -54,7 +54,9 @@ class ImageLoaderFactory
 
 extern "C" {
 
-EXPORT CvMat getImage(DeviceTyp, std::string);
+EXPORT CvMat getImage(DeviceTyp, const char*);
+EXPORT void deleteImage(CvMat);
+//EXPORT short errorHappend(); //020715-TODOnyquistDev return error code
 
 }// extern "C"
 
