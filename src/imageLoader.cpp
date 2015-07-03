@@ -29,7 +29,7 @@ unique_ptr<Mat> ImageReader::loadImage(const string& location)
 
 /**
  * @brief Scans an image with an scanner
- * @param
+ * @param device The Scanner ID
  * @return The scanned Image
  */
 unique_ptr<Mat> ImageScanner::loadImage(const string& /*device*/)
@@ -64,13 +64,13 @@ ImageLoaderFactory::ImageLoaderFactory(DeviceTyp deviceTyp)
   switch(deviceTyp)
   {
     case DeviceTyp::Disk:
-      m_imageLoader = shared_ptr<ImageReader>(new ImageReader());
+      m_imageLoader = make_unique<ImageReader>(ImageReader());
       break;
     case DeviceTyp::Scanner:
-      m_imageLoader = shared_ptr<ImageScanner>(new ImageScanner());
+      m_imageLoader = make_unique<ImageScanner>(ImageScanner());
       break;
     case DeviceTyp::Webcam:
-      m_imageLoader = shared_ptr<ImageTaker>(new ImageTaker());
+      m_imageLoader = make_unique<ImageTaker>(ImageTaker());
       break;
     default:
       throw ImageLoaderException(__FILE__, __LINE__, Error::UnknownDeviceType, PRINT(deviceTyp));
@@ -81,9 +81,9 @@ ImageLoaderFactory::ImageLoaderFactory(DeviceTyp deviceTyp)
  * @brief Returns the pointer to the image-loader object
  * @return The image-loader object
  */
-shared_ptr<ImageLoader> ImageLoaderFactory::getImageLoader() const
+ImageLoader& ImageLoaderFactory::getImageLoader() const
 {
-  return m_imageLoader;
+  return *m_imageLoader;
 }
 
 /**
@@ -96,13 +96,12 @@ EXPORT CvMat getImage(DeviceTyp deviceTyp, const char* device)
 {
   try
   {
-    std::shared_ptr<ImageLoader> imageLoader;
-    ImageLoaderFactory imageLoaderFactory(deviceTyp);
-    imageLoader = imageLoaderFactory.getImageLoader();
+    ImageLoaderFactory imageLoaderFactory {deviceTyp};
+    ImageLoader& imageLoader {imageLoaderFactory.getImageLoader()};
 
     auto picture = loadedImages.begin();
     bool success {false};
-    tie(picture, success) = loadedImages.insert(imageLoader->loadImage(device));
+    tie(picture, success) = loadedImages.insert(imageLoader.loadImage(device));
     if(!success)
       throw ImageLoaderException(__FILE__, __LINE__, Error::ImageAlreadyLoaded, "Location: "s + device);
 

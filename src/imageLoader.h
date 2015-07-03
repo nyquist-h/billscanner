@@ -43,11 +43,11 @@ enum class DeviceTyp
 class ImageLoaderFactory
 {
   private:
-    std::shared_ptr<ImageLoader> m_imageLoader;
+    std::unique_ptr<ImageLoader> m_imageLoader;
 
   public:
     ImageLoaderFactory(DeviceTyp);
-    std::shared_ptr<ImageLoader> getImageLoader() const;
+    ImageLoader& getImageLoader() const;
     virtual ~ImageLoaderFactory(){}
 };
 
