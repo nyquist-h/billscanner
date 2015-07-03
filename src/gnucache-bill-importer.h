@@ -5,10 +5,10 @@
   #define EXPORT __declspec(dllexport)
   #define IMPORT __declspec(dllimport)
 #elif defined(__GNUG__)
-  #define EXPORT __attribute__((visibility("default")))
+  #define EXPORT
   #define IMPORT
 #elif defined(__llvm__)
-  #define EXPORT __attribute__((visibility("default")))
+  #define EXPORT
   #define IMPORT
 #else
   #error Unknown dynamic link import/export semantics.
@@ -37,9 +37,11 @@ class ErrorMessages
     std::map<Error, std::string> m_errors;
 
     ErrorMessages();
-    ErrorMessages(const ErrorMessages&); //TODO check if needed in c++ 11
 
   public:
+    ErrorMessages(const ErrorMessages&) = delete;
+    ErrorMessages& operator=(ErrorMessages const&) = delete;
+
     static ErrorMessages& getInstance();
     std::string getErrorMessage(Error);
 };
@@ -48,12 +50,12 @@ class ImageLoaderException : public std::exception
 {
   private:
     std::string m_functionName;
-    unsigned int m_lineNumber;
+    int m_lineNumber = 0;
     std::string m_message;
 
   public:
-    ImageLoaderException(const std::string&, unsigned int, Error);
-    ImageLoaderException(const std::string&, unsigned int, Error, const std::string&);
+    ImageLoaderException(const std::string&, int, Error);
+    ImageLoaderException(const std::string&, int, Error, const std::string&);
     const char* what() const noexcept;
 };
 
