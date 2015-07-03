@@ -47,8 +47,9 @@ string ErrorMessages::getErrorMessage(Error error)
  */
 ImageLoaderException::ImageLoaderException(const string& functionName, int lineNumber,
     Error errorCode)
-  : m_functionName(functionName),
-    m_lineNumber(lineNumber),
+  : m_lineNumber(lineNumber),
+    m_functionName(functionName),
+    m_error(errorCode),
     m_message(ErrorMessages::getInstance().getErrorMessage(errorCode))
 {
  //TODO logging
@@ -63,8 +64,9 @@ ImageLoaderException::ImageLoaderException(const string& functionName, int lineN
  */
 ImageLoaderException::ImageLoaderException(const string& functionName, int lineNumber,
     Error errorCode, const std::string& additionalInformations)
-  : m_functionName(functionName),
-    m_lineNumber(lineNumber),
+  : m_lineNumber(lineNumber),
+    m_functionName(functionName),
+    m_error(errorCode),
     m_message(ErrorMessages::getInstance().getErrorMessage(errorCode) +
               " Additional Information: " + additionalInformations)
 {

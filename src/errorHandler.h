@@ -8,6 +8,7 @@
 #include <map>
 #include <vector>
 #include <memory>
+#include <chrono>
 
 enum class Error
 {
@@ -38,8 +39,11 @@ class ErrorMessages
 class ImageLoaderException : public std::exception
 {
   private:
-    const std::string m_functionName;
     const int m_lineNumber = 0;
+    const std::chrono::system_clock::time_point m_timeStamp = std::chrono::system_clock::now();
+
+    const std::string m_functionName;
+    const Error m_error;
     const std::string m_message;
 
   public:
