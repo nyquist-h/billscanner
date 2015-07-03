@@ -80,4 +80,41 @@ const char* ImageLoaderException::what() const noexcept
  return m_message.c_str();
 }
 
+/**
+ * @brief Returns the instance of the ErrorHistory Singleton object
+ * @return The error history
+ */
+ErrorHistory& ErrorHistory::getInstance()
+{
+  static ErrorHistory instance;
+  return instance;
+}
+
+/**
+ * @brief Adds an error to the history
+ * @param sError The error which happened
+ */
+void ErrorHistory::addError(const std::exception& sError)
+{
+  m_errorHistory.emplace_back(make_unique<std::exception>(sError)); //040715-TODOnyquistDev throws
+}
+
+/**
+ * @brief Gets the error message from the last error
+ * @return Error message from last error
+ */
+const char* ErrorHistory::lastErrorMessage() const
+{
+  return m_errorHistory.back()->what();
+}
+
+/**
+ * @brief Gets the last error
+ * @return Last error
+ */
+const std::exception& ErrorHistory::lastError() const
+{
+  return *(m_errorHistory.back());
+}
+
 //--------------------------------C API---------------------------------------//

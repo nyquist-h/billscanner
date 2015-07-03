@@ -51,7 +51,7 @@ class ImageLoaderFactory
 };
 
 //--------------------------------C API---------------------------------------//
-extern "C" 
+extern "C"
 {
   EXPORT CvMat getImage(DeviceTyp, const char*);
   EXPORT void deleteImage(CvMat);

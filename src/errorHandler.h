@@ -6,6 +6,8 @@
 #include <exception>
 #include <string>
 #include <map>
+#include <vector>
+#include <memory>
 
 enum class Error
 {
@@ -27,7 +29,7 @@ class ErrorMessages
 
   public:
     ErrorMessages(const ErrorMessages&) = delete;
-    ErrorMessages& operator=(ErrorMessages const&) = delete;
+    ErrorMessages& operator=(const ErrorMessages&) = delete;
 
     static ErrorMessages& getInstance();
     std::string getErrorMessage(Error);
@@ -36,9 +38,9 @@ class ErrorMessages
 class ImageLoaderException : public std::exception
 {
   private:
-    std::string m_functionName;
-    int m_lineNumber = 0;
-    std::string m_message;
+    const std::string m_functionName;
+    const int m_lineNumber = 0;
+    const std::string m_message;
 
   public:
     ImageLoaderException(const std::string&, int, Error);
@@ -46,8 +48,26 @@ class ImageLoaderException : public std::exception
     const char* what() const noexcept;
 };
 
+class ErrorHistory
+{
+  private:
+    std::vector<std::unique_ptr<std::exception>> m_errorHistory;
+
+    ErrorHistory() = default;
+
+  public:
+    ErrorHistory(const ErrorHistory&) = delete;
+    ErrorHistory& operator=(const ErrorHistory&) = delete;
+
+    static ErrorHistory& getInstance();
+
+    void addError(const std::exception&);
+    const char* lastErrorMessage() const;
+    const std::exception& lastError() const;
+};
+
 //--------------------------------C API---------------------------------------//
-extern "C" 
+extern "C"
 {
   EXPORT short errorHappend(); //020715-TODOnyquistDev return error code
   EXPORT const char* getError(); //020715-TODOnyquistDev return error code
