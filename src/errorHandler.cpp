@@ -6,17 +6,17 @@
 using namespace std;
 
 /**
- * @brief Assigns error messages to error enums
+ * @brief Assigns error messages to the error code
  */
 ErrorMessages::ErrorMessages()
 {
-  m_errors[Error::UnableToLoadImageFromFile] = "Unable to load image form file!";
-  m_errors[Error::UnableToLoadImageFromWebcam] = "Unable to load image form web cam!";
-  m_errors[Error::UnableToLoadImageFromsScanner] = "Unable to load image form scanner!";
-  m_errors[Error::UnknownDeviceType] = "Unknown device type!";
-  m_errors[Error::ImageAlreadyLoaded] = "Image already loaded";
+  m_errors[ErrorCode::UnableToLoadImageFromFile] = "Unable to load image form file!";
+  m_errors[ErrorCode::UnableToLoadImageFromWebcam] = "Unable to load image form web cam!";
+  m_errors[ErrorCode::UnableToLoadImageFromsScanner] = "Unable to load image form scanner!";
+  m_errors[ErrorCode::UnknownDeviceType] = "Unknown device type!";
+  m_errors[ErrorCode::ImageAlreadyLoaded] = "Image already loaded";
 
-  assert(m_errors.size() == static_cast<size_t>(Error::Count));
+  assert(m_errors.size() == static_cast<size_t>(ErrorCode::Count));
 }
 
 /**
@@ -30,26 +30,26 @@ ErrorMessages& ErrorMessages::getInstance()
 }
 
 /**
- * @brief Returns the error message which belongs to the Error enum
- * @param error The Error enum
- * @return Error m_message
+ * @brief Returns the error message which belongs to the error code
+ * @param errorCode The error code
+ * @return Error message
  */
-string ErrorMessages::getErrorMessage(Error error)
+string ErrorMessages::getErrorMessage(ErrorCode errorCode)
 {
-  return m_errors[error];
+  return m_errors[errorCode];
 }
 
 /**
  * @brief Exception which is thrown if an image can't be loaded
  * @param functionName The name of the function where the error happened
  * @param lineNumber The line of code where the exception is thrown
- * @param errorCode The Error which happened
+ * @param errorCode The error code from the error which happened
  */
 ImageLoaderException::ImageLoaderException(const string& functionName, int lineNumber,
-    Error errorCode)
+    ErrorCode errorCode)
   : m_lineNumber(lineNumber),
     m_functionName(functionName),
-    m_error(errorCode),
+    m_errorCode(errorCode),
     m_message(ErrorMessages::getInstance().getErrorMessage(errorCode))
 {
  //TODO logging
@@ -59,14 +59,14 @@ ImageLoaderException::ImageLoaderException(const string& functionName, int lineN
  * @brief Exception which is thrown if an image can't be loaded
  * @param functionName The name of the function where the error happened
  * @param lineNumber The line of code where the exception is thrown
- * @param errorCode The Error which happened
+ * @param errorCode The Error code from the error which happened
  * @param additionalInformations Additional information about the error
  */
 ImageLoaderException::ImageLoaderException(const string& functionName, int lineNumber,
-    Error errorCode, const std::string& additionalInformations)
+    ErrorCode errorCode, const std::string& additionalInformations)
   : m_lineNumber(lineNumber),
     m_functionName(functionName),
-    m_error(errorCode),
+    m_errorCode(errorCode),
     m_message(ErrorMessages::getInstance().getErrorMessage(errorCode) +
               " Additional Information: " + additionalInformations)
 {

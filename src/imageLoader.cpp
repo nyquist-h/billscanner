@@ -45,7 +45,7 @@ unique_ptr<Mat> ImageReader::loadImage(const string& location)
 {
   unique_ptr<Mat> image = make_unique<Mat>(imread(location, CV_LOAD_IMAGE_COLOR));
   if(image->data == nullptr) //020715-TODOnyquistDev NULL
-    throw ImageLoaderException(__func__, __LINE__, Error::UnableToLoadImageFromFile, location);
+    throw ImageLoaderException(__func__, __LINE__, ErrorCode::UnableToLoadImageFromFile, location);
   return image;
 }
 
@@ -70,7 +70,7 @@ unique_ptr<Mat> ImageTaker::loadImage(const string& device)
 {
   VideoCapture camera(stoi(device)); //020715-TODOnyquistDev can throw,
   if(!camera.isOpened())
-    throw ImageLoaderException(__func__, __LINE__, Error::UnableToLoadImageFromWebcam, device);
+    throw ImageLoaderException(__func__, __LINE__, ErrorCode::UnableToLoadImageFromWebcam, device);
 
   unique_ptr<Mat> image = make_unique<Mat>();
   camera >> *image;
@@ -95,7 +95,7 @@ ImageLoaderFactory::ImageLoaderFactory(DeviceTyp deviceTyp)
       m_imageLoader = make_unique<ImageTaker>(ImageTaker());
       break;
     default:
-      throw ImageLoaderException(__FILE__, __LINE__, Error::UnknownDeviceType, PRINT(deviceTyp));
+      throw ImageLoaderException(__FILE__, __LINE__, ErrorCode::UnknownDeviceType, PRINT(deviceTyp));
   }
 }
 
@@ -126,7 +126,7 @@ EXPORT CvMat getImage(DeviceTyp deviceTyp, const char* device)
     bool success {false};
     tie(picture, success) = loadedImages.insert(imageLoader.loadImage(device));
     if(!success)
-      throw ImageLoaderException(__FILE__, __LINE__, Error::ImageAlreadyLoaded, "Location: "s + device);
+      throw ImageLoaderException(__FILE__, __LINE__, ErrorCode::ImageAlreadyLoaded, "Location: "s + device);
 
     return *picture->get();
   }

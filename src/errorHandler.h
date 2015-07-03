@@ -10,7 +10,7 @@
 #include <memory>
 #include <chrono>
 
-enum class Error
+enum class ErrorCode
 {
   UnableToLoadImageFromFile = 0,
   UnableToLoadImageFromWebcam,
@@ -24,7 +24,7 @@ enum class Error
 class ErrorMessages
 {
   private:
-    std::map<Error, std::string> m_errors;
+    std::map<ErrorCode, std::string> m_errors;
 
     ErrorMessages();
 
@@ -33,7 +33,7 @@ class ErrorMessages
     ErrorMessages& operator=(const ErrorMessages&) = delete;
 
     static ErrorMessages& getInstance();
-    std::string getErrorMessage(Error);
+    std::string getErrorMessage(ErrorCode);
 };
 
 class ImageLoaderException : public std::exception
@@ -43,12 +43,12 @@ class ImageLoaderException : public std::exception
     const std::chrono::system_clock::time_point m_timeStamp = std::chrono::system_clock::now();
 
     const std::string m_functionName;
-    const Error m_error;
+    const ErrorCode m_errorCode;
     const std::string m_message;
 
   public:
-    ImageLoaderException(const std::string&, int, Error);
-    ImageLoaderException(const std::string&, int, Error, const std::string&);
+    ImageLoaderException(const std::string&, int, ErrorCode);
+    ImageLoaderException(const std::string&, int, ErrorCode, const std::string&);
     const char* what() const noexcept;
 };
 
