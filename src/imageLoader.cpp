@@ -4,6 +4,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <string>
 #include <set>
+#include <functional>
 #include <memory>
 
 using namespace std;
@@ -12,7 +13,27 @@ using cv::Mat;
 using cv::VideoCapture;
 
 //020715-TODOnyquistDev export to loadedimage class and use custom compare function
-set<unique_ptr<Mat>> loadedImages;
+auto cmp = [](const unique_ptr<Mat>& imageA, const unique_ptr<Mat>& imageB)
+{
+  //040715-TODOnyquistDev implement the right way
+  //Mat output(imageA->size(), imageB->type());
+  //cv::compare(*imageA, *imageB, output, cv::CMP_LT);
+  return imageA->rows < imageB->rows;
+};
+
+set<unique_ptr<Mat>, decltype(cmp)> loadedImages(cmp);
+
+int main()
+{
+    auto m = std::map<int, int, std::function<bool(const int&, const int&)>>
+    {
+      [](const int& a, const int& b)
+      {
+        return a < b;
+      }
+    };
+    return 0;
+}
 
 /**
  * @brief Loads an image from a file
