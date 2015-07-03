@@ -1,4 +1,5 @@
 #include "imageLoader.h"
+#include "errorHandler.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -107,6 +108,7 @@ ImageLoader& ImageLoaderFactory::getImageLoader() const
   return *m_imageLoader;
 }
 
+//--------------------------------C API---------------------------------------//
 /**
  * @brief Returns the loaded image to the function caller
  * @param deviceTyp The device type from which to load the image
