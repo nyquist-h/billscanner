@@ -16,10 +16,10 @@ using cv::imread;
  */
 TEST(ImageLoader_Test,ImageReaderGetValidImage)
 {
-  ImageLoaderFactory imageLoaderCreator(DeviceTyp::Disk);
-  shared_ptr<ImageLoader> m_imageLoader { imageLoaderCreator.getImageLoader() };
+  ImageLoaderFactory imageLoaderCreator {DeviceTyp::Disk};
+  ImageLoader& m_imageLoader {imageLoaderCreator.getImageLoader()};
   string location {"../../test/data/imageLoaderTestImage.jpg"};
-  unique_ptr<Mat> loadedImage = m_imageLoader->loadImage(location);
+  unique_ptr<Mat> loadedImage = m_imageLoader.loadImage(location);
   Mat originalImage{ imread(location, CV_LOAD_IMAGE_COLOR) };
   Mat result(*loadedImage == originalImage);
   EXPECT_EQ(255, result.at<unsigned char>(0,0));
@@ -31,9 +31,9 @@ TEST(ImageLoader_Test,ImageReaderGetValidImage)
 TEST(ImageLoader_Test,ImageReaderGetNonExistentImage)
 {
   ImageLoaderFactory imageLoaderCreator(DeviceTyp::Disk);
-  shared_ptr<ImageLoader> m_imageLoader { imageLoaderCreator.getImageLoader() };
+  ImageLoader& m_imageLoader {imageLoaderCreator.getImageLoader()};
   string location {"../../test/data/NonExistentTestImage.jpg"};
   Mat loadedImage;
-  ASSERT_THROW(m_imageLoader->loadImage(location), ImageLoaderException);
+  ASSERT_THROW(m_imageLoader.loadImage(location), ImageLoaderException);
 }
 
