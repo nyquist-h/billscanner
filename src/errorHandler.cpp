@@ -48,6 +48,47 @@ string ErrorMessages::getErrorMessage(ErrorCode errorCode)
  * @param error Exception object
  * @return Output stream
  */
+void GnuCacheBillImporterException::print(ostream& stream) const
+{
+  auto now = chrono::system_clock::to_time_t(m_timeStamp);
+  stream <<  put_time(localtime(&now), "%c") << " ";
+}
+
+/**
+ * @brief Constructor of an custom exception
+ * @param errorMessage Error message
+ */
+CustomException::CustomException(const string& errorMessage)
+ : m_errorMessage(errorMessage)
+{ }
+
+/**
+ * @brief Returns the error message of the exception
+ * @return Error message
+ */
+const char* CustomException::what() const noexcept
+{
+  return m_errorMessage.c_str();
+}
+
+/**
+ * @brief Prints all information contained in the exception object
+ * @param stream Output stream
+ * @param error Exception object
+ * @return Output stream
+ */
+void CustomException::print(ostream& stream) const
+{
+  GnuCacheBillImporterException::print(stream);
+  stream << m_errorMessage;
+}
+
+/**
+ * @brief Prints all information contained in the exception object
+ * @param stream Output stream
+ * @param error Exception object
+ * @return Output stream
+ */
 std::ostream& operator<<(std::ostream& stream, const GnuCacheBillImporterException& error)
 {
   error.print(stream);
@@ -59,7 +100,7 @@ std::ostream& operator<<(std::ostream& stream, const GnuCacheBillImporterExcepti
  * @param functionName The name of the function where the error happened
  * @param lineNumber The line of code where the exception is thrown
  */
-ImageLoaderException::ImageLoaderException(const string& fileName, const string& functionName, 
+ImageLoaderException::ImageLoaderException(const string& fileName, const string& functionName,
     int lineNumber, ErrorCode errorCode)
   : m_fileName(fileName),
     m_functionName(functionName),
@@ -97,8 +138,7 @@ const char* ImageLoaderException::what() const noexcept
 
 void ImageLoaderException::print(ostream& stream) const
 {
-  auto now = chrono::system_clock::to_time_t(m_timeStamp);
-  stream <<  put_time(localtime(&now), "%c") << " ";
+  GnuCacheBillImporterException::print(stream);
   stream << "Line: " << m_lineNumber << " ";
   stream << "Function: " << m_lineNumber << " ";
   stream << "Error: " << m_lineNumber << " ";
@@ -114,14 +154,16 @@ ErrorHistory& ErrorHistory::getInstance()
   return instance;
 }
 
+//050715-TODOnyquistDev
 /**
  * @brief Adds an error to the history
  * @param sError The error which happened
  */
-void ErrorHistory::addError(const std::exception& sError)
-{
-  m_errorHistory.emplace_back(make_unique<std::exception>(sError)); //040715-TODOnyquistDev throws
-}
+//void ErrorHistory::addError(const GnuCacheBillImporterException& sError)
+//{
+  //m_errorHistory.emplace_back(make_unique<GnuCacheBillImporterException>(sError)); //040715-TODOnyquistDev throws
+  //m_unhandledErrors.push_back(m_errorHistory.back().get());
+//}
 
 /**
  * @brief Gets the error message from the last error
@@ -136,19 +178,41 @@ const char* ErrorHistory::lastErrorMessage() const
  * @brief Gets the last error
  * @return Last error
  */
-const std::exception& ErrorHistory::lastError() const
+GnuCacheBillImporterException* ErrorHistory::handleError()
 {
-  return *(m_errorHistory.back());
+  if(m_unhandledErrors.empty())
+    throw CustomException("There are no unhandled exceptions!");
+
+  GnuCacheBillImporterException* lastError {m_unhandledErrors.back()};
+  m_unhandledErrors.pop_back();
+  return lastError;
 }
 
-bool ErrorHistory::unhandledErrors()
+/**
+ * @brief Return the number of unhandled errors
+ * @return Number of unhandled errors
+ */
+int ErrorHistory::unhandledErrors() const
 {
-//040715-TODOnyquistDev continue
-
+  return m_unhandledErrors.size();
 }
 
 //--------------------------------C API---------------------------------------//
-EXPORT short errorHappend()
+EXPORT int errorHappend()
 {
+  return ErrorHistory::getInstance().unhandledErrors();
   //return
+}
+
+EXPORT const char* getError()
+{
+  try
+  {
+    const char* errorMesage = ErrorHistory::getInstance().handleError()->what();
+    return errorMesage;
+  }
+  catch(exception& except)
+  {
+    return except.what();
+  }
 }

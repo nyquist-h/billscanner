@@ -129,15 +129,15 @@ EXPORT CvMat getImage(DeviceTyp deviceTyp, const char* device)
 
     return *picture->get();
   }
-  catch(const exception& exception)
+  catch(const GnuCacheBillImporterException& except)
   {
     //020715-TODOnyquistDev logging show: exception.what();
     return CvMat();
   }
-  catch(...)
+  catch(exception& except)
   {
     //040715-TODOnyquistDev
-  
+    return CvMat();
   }
 }
 

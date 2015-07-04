@@ -40,20 +40,32 @@ class ErrorMessages
 
 class GnuCacheBillImporterException : public std::exception
 {
+  protected:
+    const std::chrono::system_clock::time_point m_timeStamp = std::chrono::system_clock::now();
+
   public:
     virtual const char* what() const noexcept = 0;
     virtual void print(std::ostream&) const = 0;
 
     friend std::ostream& operator<<(std::ostream& stream, const GnuCacheBillImporterException& error);
 };
-
 //040715-TODOnyquistDev check if needed std::ostream& operator<<(std::ostream& stream, const GnuCacheBillImporterException& error);
+
+class CustomException : public GnuCacheBillImporterException
+{
+  private:
+    const std::string m_errorMessage;
+
+  public:
+    CustomException(const std::string&);
+    virtual const char* what() const noexcept;
+    virtual void print(std::ostream&) const;
+};
+
 
 class ImageLoaderException : public GnuCacheBillImporterException
 {
   private:
-    const std::chrono::system_clock::time_point m_timeStamp = std::chrono::system_clock::now();
-
     const std::string m_fileName;
     const std::string m_functionName;
     const int m_lineNumber = 0;
@@ -70,8 +82,8 @@ class ImageLoaderException : public GnuCacheBillImporterException
 class ErrorHistory
 {
   private:
-    std::vector<std::unique_ptr<std::exception>> m_errorHistory;
-    std::vector<std::exception*> m_unhandledErrors;
+    std::vector<std::unique_ptr<GnuCacheBillImporterException>> m_errorHistory;
+    std::vector<GnuCacheBillImporterException*> m_unhandledErrors;
 
     ErrorHistory() = default;
 
@@ -81,16 +93,16 @@ class ErrorHistory
 
     static ErrorHistory& getInstance();
 
-    void addError(const std::exception&);
+    //050715-TODOnyquistDev void addError(const GnuCacheBillImporterException&);
     const char* lastErrorMessage() const;
-    const std::exception& lastError() const;
-    bool unhandledErrors();
+    GnuCacheBillImporterException* handleError();
+    int unhandledErrors() const;
 };
 
 //--------------------------------C API---------------------------------------//
 extern "C"
 {
-  EXPORT short errorHappend(); //020715-TODOnyquistDev return error code
+  EXPORT int errorHappend(); //020715-TODOnyquistDev return error code
   EXPORT const char* getError(); //020715-TODOnyquistDev return error code
 }
 
