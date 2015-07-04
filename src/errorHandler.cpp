@@ -1,6 +1,9 @@
 #include "errorHandler.h"
 
 #include <iostream>
+#include <ctime>
+#include <chrono>
+#include <iomanip>
 #include <string>
 #include <assert.h>
 using namespace std;
@@ -40,16 +43,27 @@ string ErrorMessages::getErrorMessage(ErrorCode errorCode)
 }
 
 /**
+ * @brief Prints all information contained in the exception object
+ * @param stream Output stream
+ * @param error Exception object
+ * @return Output stream
+ */
+std::ostream& operator<<(std::ostream& stream, const GnuCacheBillImporterException& error)
+{
+  error.print(stream);
+  return stream;
+}
+
+/**
  * @brief Exception which is thrown if an image can't be loaded
  * @param functionName The name of the function where the error happened
  * @param lineNumber The line of code where the exception is thrown
- * @param errorCode The error code from the error which happened
  */
-ImageLoaderException::ImageLoaderException(const string& functionName, int lineNumber,
-    ErrorCode errorCode)
-  : m_lineNumber(lineNumber),
+ImageLoaderException::ImageLoaderException(const string& fileName, const string& functionName, 
+    int lineNumber, ErrorCode errorCode)
+  : m_fileName(fileName),
     m_functionName(functionName),
-    m_errorCode(errorCode),
+    m_lineNumber(lineNumber),
     m_message(ErrorMessages::getInstance().getErrorMessage(errorCode))
 {
  //TODO logging
@@ -59,14 +73,13 @@ ImageLoaderException::ImageLoaderException(const string& functionName, int lineN
  * @brief Exception which is thrown if an image can't be loaded
  * @param functionName The name of the function where the error happened
  * @param lineNumber The line of code where the exception is thrown
- * @param errorCode The Error code from the error which happened
  * @param additionalInformations Additional information about the error
  */
-ImageLoaderException::ImageLoaderException(const string& functionName, int lineNumber,
-    ErrorCode errorCode, const std::string& additionalInformations)
-  : m_lineNumber(lineNumber),
+ImageLoaderException::ImageLoaderException(const string& fileName, const string& functionName,
+    int lineNumber, ErrorCode errorCode, const std::string& additionalInformations)
+  : m_fileName(fileName),
     m_functionName(functionName),
-    m_errorCode(errorCode),
+    m_lineNumber(lineNumber),
     m_message(ErrorMessages::getInstance().getErrorMessage(errorCode) +
               " Additional Information: " + additionalInformations)
 {
@@ -79,7 +92,16 @@ ImageLoaderException::ImageLoaderException(const string& functionName, int lineN
  */
 const char* ImageLoaderException::what() const noexcept
 {
- return m_message.c_str();
+  return m_message.c_str();
+}
+
+void ImageLoaderException::print(ostream& stream) const
+{
+  auto now = chrono::system_clock::to_time_t(m_timeStamp);
+  stream <<  put_time(localtime(&now), "%c") << " ";
+  stream << "Line: " << m_lineNumber << " ";
+  stream << "Function: " << m_lineNumber << " ";
+  stream << "Error: " << m_lineNumber << " ";
 }
 
 /**
@@ -119,4 +141,14 @@ const std::exception& ErrorHistory::lastError() const
   return *(m_errorHistory.back());
 }
 
+bool ErrorHistory::unhandledErrors()
+{
+//040715-TODOnyquistDev continue
+
+}
+
 //--------------------------------C API---------------------------------------//
+EXPORT short errorHappend()
+{
+  //return
+}

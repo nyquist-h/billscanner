@@ -10,6 +10,8 @@
 #include <memory>
 #include <chrono>
 
+#define ERROR_LOCATION __FILE__, __func__, __LINE__
+
 enum class ErrorCode
 {
   UnableToLoadImageFromFile = 0,
@@ -36,26 +38,40 @@ class ErrorMessages
     std::string getErrorMessage(ErrorCode);
 };
 
-class ImageLoaderException : public std::exception
+class GnuCacheBillImporterException : public std::exception
+{
+  public:
+    virtual const char* what() const noexcept = 0;
+    virtual void print(std::ostream&) const = 0;
+
+    friend std::ostream& operator<<(std::ostream& stream, const GnuCacheBillImporterException& error);
+};
+
+//040715-TODOnyquistDev check if needed std::ostream& operator<<(std::ostream& stream, const GnuCacheBillImporterException& error);
+
+class ImageLoaderException : public GnuCacheBillImporterException
 {
   private:
-    const int m_lineNumber = 0;
     const std::chrono::system_clock::time_point m_timeStamp = std::chrono::system_clock::now();
 
+    const std::string m_fileName;
     const std::string m_functionName;
-    const ErrorCode m_errorCode;
+    const int m_lineNumber = 0;
     const std::string m_message;
 
   public:
-    ImageLoaderException(const std::string&, int, ErrorCode);
-    ImageLoaderException(const std::string&, int, ErrorCode, const std::string&);
+    ImageLoaderException(const std::string&, const std::string&, int, ErrorCode);
+    ImageLoaderException(const std::string&, const std::string&, int, ErrorCode, const std::string&);
+
     const char* what() const noexcept;
+    void print(std::ostream&) const;
 };
 
 class ErrorHistory
 {
   private:
     std::vector<std::unique_ptr<std::exception>> m_errorHistory;
+    std::vector<std::exception*> m_unhandledErrors;
 
     ErrorHistory() = default;
 
@@ -68,6 +84,7 @@ class ErrorHistory
     void addError(const std::exception&);
     const char* lastErrorMessage() const;
     const std::exception& lastError() const;
+    bool unhandledErrors();
 };
 
 //--------------------------------C API---------------------------------------//

@@ -23,7 +23,6 @@ auto cmp = [](const unique_ptr<Mat>& imageA, const unique_ptr<Mat>& imageB)
 };
 
 set<unique_ptr<Mat>, decltype(cmp)> loadedImages(cmp);
-
 int main()
 {
     auto m = std::map<int, int, std::function<bool(const int&, const int&)>>
@@ -45,7 +44,7 @@ unique_ptr<Mat> ImageReader::loadImage(const string& location)
 {
   unique_ptr<Mat> image = make_unique<Mat>(imread(location, CV_LOAD_IMAGE_COLOR));
   if(image->data == nullptr) //020715-TODOnyquistDev NULL
-    throw ImageLoaderException(__func__, __LINE__, ErrorCode::UnableToLoadImageFromFile, location);
+    throw ImageLoaderException(ERROR_LOCATION, ErrorCode::UnableToLoadImageFromFile, location);
   return image;
 }
 
@@ -70,7 +69,7 @@ unique_ptr<Mat> ImageTaker::loadImage(const string& device)
 {
   VideoCapture camera(stoi(device)); //020715-TODOnyquistDev can throw,
   if(!camera.isOpened())
-    throw ImageLoaderException(__func__, __LINE__, ErrorCode::UnableToLoadImageFromWebcam, device);
+    throw ImageLoaderException(ERROR_LOCATION, ErrorCode::UnableToLoadImageFromWebcam, device);
 
   unique_ptr<Mat> image = make_unique<Mat>();
   camera >> *image;
@@ -95,7 +94,7 @@ ImageLoaderFactory::ImageLoaderFactory(DeviceTyp deviceTyp)
       m_imageLoader = make_unique<ImageTaker>(ImageTaker());
       break;
     default:
-      throw ImageLoaderException(__FILE__, __LINE__, ErrorCode::UnknownDeviceType, PRINT(deviceTyp));
+      throw ImageLoaderException(ERROR_LOCATION, ErrorCode::UnknownDeviceType, PRINT(deviceTyp));
   }
 }
 
@@ -126,7 +125,7 @@ EXPORT CvMat getImage(DeviceTyp deviceTyp, const char* device)
     bool success {false};
     tie(picture, success) = loadedImages.insert(imageLoader.loadImage(device));
     if(!success)
-      throw ImageLoaderException(__FILE__, __LINE__, ErrorCode::ImageAlreadyLoaded, "Location: "s + device);
+      throw ImageLoaderException(ERROR_LOCATION, ErrorCode::ImageAlreadyLoaded, "Location: "s + device);
 
     return *picture->get();
   }
@@ -134,6 +133,11 @@ EXPORT CvMat getImage(DeviceTyp deviceTyp, const char* device)
   {
     //020715-TODOnyquistDev logging show: exception.what();
     return CvMat();
+  }
+  catch(...)
+  {
+    //040715-TODOnyquistDev
+  
   }
 }
 
