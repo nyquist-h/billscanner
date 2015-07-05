@@ -55,6 +55,19 @@ void GnuCacheBillImporterException::print(ostream& stream) const
 }
 
 /**
+ * @brief Prints all information contained in the exception object
+ * @param stream Output stream
+ * @param error Exception object
+ * @return Output stream
+ */
+std::ostream& operator<<(std::ostream& stream, const GnuCacheBillImporterException& error)
+{
+  error.print(stream);
+  return stream;
+}
+
+
+/**
  * @brief Constructor of an custom exception
  * @param errorMessage Error message
  */
@@ -84,15 +97,12 @@ void CustomException::print(ostream& stream) const
 }
 
 /**
- * @brief Prints all information contained in the exception object
- * @param stream Output stream
- * @param error Exception object
- * @return Output stream
+ * @brief Creates an copy of the exception and returns an unique_ptr to it
+ * @return Unique pointer to the new created exception
  */
-std::ostream& operator<<(std::ostream& stream, const GnuCacheBillImporterException& error)
+std::unique_ptr<GnuCacheBillImporterException> CustomException::copy() const
 {
-  error.print(stream);
-  return stream;
+  return std::make_unique<CustomException> (CustomException(*this));
 }
 
 /**
@@ -145,6 +155,15 @@ void ImageLoaderException::print(ostream& stream) const
 }
 
 /**
+ * @brief Creates an copy of the exception and returns an unique_ptr to it
+ * @return Unique pointer to the new created exception
+ */
+std::unique_ptr<GnuCacheBillImporterException> ImageLoaderException::copy() const
+{
+  return std::make_unique<ImageLoaderException> (ImageLoaderException(*this));
+}
+
+/**
  * @brief Returns the instance of the ErrorHistory Singleton object
  * @return The error history
  */
@@ -159,11 +178,12 @@ ErrorHistory& ErrorHistory::getInstance()
  * @brief Adds an error to the history
  * @param sError The error which happened
  */
-//void ErrorHistory::addError(const GnuCacheBillImporterException& sError)
-//{
-  //m_errorHistory.emplace_back(make_unique<GnuCacheBillImporterException>(sError)); //040715-TODOnyquistDev throws
-  //m_unhandledErrors.push_back(m_errorHistory.back().get());
-//}
+void ErrorHistory::addError(const GnuCacheBillImporterException& sError)
+{
+  //050715-TODOnyquistDev errorLoger log error sError
+  m_errorHistory.emplace_back(sError.copy());
+  m_unhandledErrors.push_back(m_errorHistory.back().get());
+}
 
 /**
  * @brief Gets the error message from the last error
@@ -181,7 +201,7 @@ const char* ErrorHistory::lastErrorMessage() const
 GnuCacheBillImporterException* ErrorHistory::handleError()
 {
   if(m_unhandledErrors.empty())
-    throw CustomException("There are no unhandled exceptions!");
+    return nullptr;
 
   GnuCacheBillImporterException* lastError {m_unhandledErrors.back()};
   m_unhandledErrors.pop_back();
@@ -201,18 +221,16 @@ int ErrorHistory::unhandledErrors() const
 EXPORT int errorHappend()
 {
   return ErrorHistory::getInstance().unhandledErrors();
-  //return
 }
 
 EXPORT const char* getError()
 {
-  try
+  GnuCacheBillImporterException* error {ErrorHistory::getInstance().handleError()};
+  if (error)
+    return error->what();
+  else
   {
-    const char* errorMesage = ErrorHistory::getInstance().handleError()->what();
-    return errorMesage;
-  }
-  catch(exception& except)
-  {
-    return except.what();
+    static std::string noError {"No error happened!"};
+    return noError.c_str();
   }
 }

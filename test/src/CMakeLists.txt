@@ -11,7 +11,8 @@ add_executable(gnucache-bill-importer_test
                   gnucache-bill-importer_test.cpp
                   imageLoader_test.cpp
                   ../../src/gnucache-bill-importer.cpp
-                  ../../src/imageLoader.cpp)
+                  ../../src/imageLoader.cpp
+                  ../../src/errorHandler.cpp)
 
 target_link_libraries(gnucache-bill-importer_test ${GTEST_BOTH_LIBRARIES})
 target_link_libraries(gnucache-bill-importer_test ${OpenCV_LIBS} )

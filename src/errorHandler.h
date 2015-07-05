@@ -44,9 +44,14 @@ class GnuCacheBillImporterException : public std::exception
     const std::chrono::system_clock::time_point m_timeStamp = std::chrono::system_clock::now();
 
   public:
+    //050715-TODOnyquistDev object slicing copy constructor check
+    GnuCacheBillImporterException& operator=(const GnuCacheBillImporterException&) = delete;
+
     virtual const char* what() const noexcept = 0;
     virtual void print(std::ostream&) const = 0;
+    virtual std::unique_ptr<GnuCacheBillImporterException> copy() const = 0;
 
+    virtual ~GnuCacheBillImporterException() noexcept { }
     friend std::ostream& operator<<(std::ostream& stream, const GnuCacheBillImporterException& error);
 };
 //040715-TODOnyquistDev check if needed std::ostream& operator<<(std::ostream& stream, const GnuCacheBillImporterException& error);
@@ -60,6 +65,9 @@ class CustomException : public GnuCacheBillImporterException
     CustomException(const std::string&);
     virtual const char* what() const noexcept;
     virtual void print(std::ostream&) const;
+    std::unique_ptr<GnuCacheBillImporterException> copy() const;
+
+    virtual ~CustomException() noexcept {}
 };
 
 
@@ -77,6 +85,9 @@ class ImageLoaderException : public GnuCacheBillImporterException
 
     const char* what() const noexcept;
     void print(std::ostream&) const;
+    std::unique_ptr<GnuCacheBillImporterException> copy() const;
+
+    virtual ~ImageLoaderException() noexcept {}
 };
 
 class ErrorHistory
@@ -93,7 +104,7 @@ class ErrorHistory
 
     static ErrorHistory& getInstance();
 
-    //050715-TODOnyquistDev void addError(const GnuCacheBillImporterException&);
+    void addError(const GnuCacheBillImporterException&);
     const char* lastErrorMessage() const;
     GnuCacheBillImporterException* handleError();
     int unhandledErrors() const;

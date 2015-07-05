@@ -21,19 +21,7 @@ auto cmp = [](const unique_ptr<Mat>& imageA, const unique_ptr<Mat>& imageB)
   //cv::compare(*imageA, *imageB, output, cv::CMP_LT);
   return imageA->rows < imageB->rows;
 };
-
 set<unique_ptr<Mat>, decltype(cmp)> loadedImages(cmp);
-int main()
-{
-    auto m = std::map<int, int, std::function<bool(const int&, const int&)>>
-    {
-      [](const int& a, const int& b)
-      {
-        return a < b;
-      }
-    };
-    return 0;
-}
 
 /**
  * @brief Loads an image from a file
@@ -67,7 +55,7 @@ unique_ptr<Mat> ImageScanner::loadImage(const string& /*device*/)
  */
 unique_ptr<Mat> ImageTaker::loadImage(const string& device)
 {
-  VideoCapture camera(stoi(device)); //020715-TODOnyquistDev can throw,
+  VideoCapture camera(stoi(device));
   if(!camera.isOpened())
     throw ImageLoaderException(ERROR_LOCATION, ErrorCode::UnableToLoadImageFromWebcam, device);
 
@@ -132,11 +120,13 @@ EXPORT CvMat getImage(DeviceTyp deviceTyp, const char* device)
   catch(const GnuCacheBillImporterException& except)
   {
     //020715-TODOnyquistDev logging show: exception.what();
+    ErrorHistory::getInstance().addError(except);
     return CvMat();
   }
   catch(exception& except)
   {
     //040715-TODOnyquistDev
+    ErrorHistory::getInstance().addError(CustomException(except.what()));
     return CvMat();
   }
 }
