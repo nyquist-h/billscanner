@@ -4,7 +4,6 @@
 #include "gnucache-bill-importer.h"
 
 #include <opencv2/core/core.hpp>
-
 #include <string>
 #include <memory>
 
@@ -51,15 +50,12 @@ class ImageLoaderFactory
     virtual ~ImageLoaderFactory(){}
 };
 
-
-extern "C" 
+//--------------------------------C API---------------------------------------//
+extern "C"
 {
-
   EXPORT CvMat getImage(DeviceTyp, const char*);
   EXPORT void deleteImage(CvMat);
-  //EXPORT short errorHappend(); //020715-TODOnyquistDev return error code
-
-}// extern "C"
+}
 
 #endif /* end of include guard: IMAGELOADER_H */
 

@@ -1,3 +1,4 @@
+#include "errorHandler.h"
 #include "imageLoader.h"
 
 #include "gtest/gtest.h"

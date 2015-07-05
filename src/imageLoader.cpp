@@ -1,4 +1,5 @@
 #include "imageLoader.h"
+#include "errorHandler.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -20,20 +21,7 @@ auto cmp = [](const unique_ptr<Mat>& imageA, const unique_ptr<Mat>& imageB)
   //cv::compare(*imageA, *imageB, output, cv::CMP_LT);
   return imageA->rows < imageB->rows;
 };
-
 set<unique_ptr<Mat>, decltype(cmp)> loadedImages(cmp);
-
-int main()
-{
-    auto m = std::map<int, int, std::function<bool(const int&, const int&)>>
-    {
-      [](const int& a, const int& b)
-      {
-        return a < b;
-      }
-    };
-    return 0;
-}
 
 /**
  * @brief Loads an image from a file
@@ -44,7 +32,7 @@ unique_ptr<Mat> ImageReader::loadImage(const string& location)
 {
   unique_ptr<Mat> image = make_unique<Mat>(imread(location, CV_LOAD_IMAGE_COLOR));
   if(image->data == nullptr) //020715-TODOnyquistDev NULL
-    throw ImageLoaderException(__func__, __LINE__, Error::UnableToLoadImageFromFile, location);
+    throw ImageLoaderException(ERROR_LOCATION, ErrorCode::UnableToLoadImageFromFile, location);
   return image;
 }
 
@@ -67,9 +55,9 @@ unique_ptr<Mat> ImageScanner::loadImage(const string& /*device*/)
  */
 unique_ptr<Mat> ImageTaker::loadImage(const string& device)
 {
-  VideoCapture camera(stoi(device)); //020715-TODOnyquistDev can throw,
+  VideoCapture camera(stoi(device));
   if(!camera.isOpened())
-    throw ImageLoaderException(__func__, __LINE__, Error::UnableToLoadImageFromWebcam, device);
+    throw ImageLoaderException(ERROR_LOCATION, ErrorCode::UnableToLoadImageFromWebcam, device);
 
   unique_ptr<Mat> image = make_unique<Mat>();
   camera >> *image;
@@ -94,7 +82,7 @@ ImageLoaderFactory::ImageLoaderFactory(DeviceTyp deviceTyp)
       m_imageLoader = make_unique<ImageTaker>(ImageTaker());
       break;
     default:
-      throw ImageLoaderException(__FILE__, __LINE__, Error::UnknownDeviceType, PRINT(deviceTyp));
+      throw ImageLoaderException(ERROR_LOCATION, ErrorCode::UnknownDeviceType, PRINT(deviceTyp));
   }
 }
 
@@ -107,6 +95,7 @@ ImageLoader& ImageLoaderFactory::getImageLoader() const
   return *m_imageLoader;
 }
 
+//--------------------------------C API---------------------------------------//
 /**
  * @brief Returns the loaded image to the function caller
  * @param deviceTyp The device type from which to load the image
@@ -124,13 +113,20 @@ EXPORT CvMat getImage(DeviceTyp deviceTyp, const char* device)
     bool success {false};
     tie(picture, success) = loadedImages.insert(imageLoader.loadImage(device));
     if(!success)
-      throw ImageLoaderException(__FILE__, __LINE__, Error::ImageAlreadyLoaded, "Location: "s + device);
+      throw ImageLoaderException(ERROR_LOCATION, ErrorCode::ImageAlreadyLoaded, "Location: "s + device);
 
     return *picture->get();
   }
-  catch(const exception& exception)
+  catch(const GnuCacheBillImporterException& except)
   {
     //020715-TODOnyquistDev logging show: exception.what();
+    ErrorHistory::getInstance().addError(except);
+    return CvMat();
+  }
+  catch(exception& except)
+  {
+    //040715-TODOnyquistDev
+    ErrorHistory::getInstance().addError(CustomException(except.what()));
     return CvMat();
   }
 }

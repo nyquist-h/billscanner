@@ -7,6 +7,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/opencv.hpp>
 #include "../src/imageLoader.h" //TODO change include path
+#include "../src/errorHandler.h" //TODO change include path
 
 #include <opencv2/highgui/highgui.hpp>
 
